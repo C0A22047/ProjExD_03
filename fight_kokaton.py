@@ -8,6 +8,7 @@ import pygame as pg
 WIDTH = 1600  # ゲームウィンドウの幅
 HEIGHT = 900  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5
+score = 0
 
 def check_bound(obj_rct: pg.Rect) -> tuple[bool, bool]:
     """
@@ -138,16 +139,32 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Score:
+    def __init__(self):
+        self.font = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
+        self.color = (0, 0, 255)
+        self.color = 0
+        self.value = 0
+        self.img = self.font.render(f"Score: {self.value}", 0, self.color)
+        self.img_rect = self.img.get_rect()
+        self.img_rect.topleft = (100, HEIGHT - 50)
+
+    def update(self, screen):
+        self.img = self.font.render(f"Score: {self.value}", 0, self.color)
+        screen.blit(self.img, self.img_rect)
+        
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
-    screen = pg.display.set_mode((WIDTH, HEIGHT))    
+    screen = pg.display.set_mode((WIDTH, HEIGHT))   
     bg_img = pg.image.load("ex03/fig/pg_bg.jpg")
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
-
+    score = Score()
     clock = pg.time.Clock()
     tmr = 0
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -156,6 +173,7 @@ def main():
                 beam = Beam(bird)
         
         screen.blit(bg_img, [0, 0])
+        
         
         for bomb in bombs:
             if bird.rct.colliderect(bomb.rct):
@@ -171,6 +189,7 @@ def main():
                     beam = None
                     bombs[i] = None
                     bird.change_img(6, screen)
+                    score.value += 1
                     pg.display.update()
         bombs = [bomb for bomb in bombs if bomb is not None]
 
@@ -180,6 +199,7 @@ def main():
             bomb.update(screen)
         if beam is not None:
             beam.update(screen) # 順番大切
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
