@@ -173,7 +173,7 @@ def main():
                 beam = Beam(bird)
         
         screen.blit(bg_img, [0, 0])
-        
+
         
         for bomb in bombs:
             if bird.rct.colliderect(bomb.rct):
@@ -203,7 +203,6 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(50)
-
 
 if __name__ == "__main__":
     pg.init()
